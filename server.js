@@ -3,7 +3,7 @@ const app = express();
 const PORT = 3000;
 
 app.get("/", (req, res) => {
-    res.send("Lý Văn Minh");
+    res.send("API by Ly Van Minh");
 });
 
 app.listen(PORT, () => {
