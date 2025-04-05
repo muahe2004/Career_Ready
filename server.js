@@ -3,16 +3,13 @@ const app = express();
 app.use(express.json());
 const PORT = 3000;
 
-const router = require('./route');
+const pool = require('./initDB');
+const dalBook = require('./dal/book')(pool);
 
-// app.get("/", (req, res) => {
-//     res.send("API by Ly Van Minh");
-// });
+const bookRoute = require('./routes/book')(dalBook);
 
-app.use('/api', router);
-
+app.use('/api', bookRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-
