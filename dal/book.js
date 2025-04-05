@@ -66,48 +66,33 @@ module.exports = function (pool) {
         }
     }
 
-    async function get_most_borrow(options) {
-        let sql = 
-            `
-                SELECT 
-                    b.bookID,
-                    b.title,
-                    b.author,
-                    b.genre,
-                    COUNT(bh.borrowID) as borrow_count
-                FROM books b
-                JOIN borrowinghistory bh ON b.bookID = bh.bookID
-                WHERE 1 = 1
-            `;
-            // WHERE bh.borrowed_date >= CURRENT_DATE - INTERVAL '6 months'
-
-
-        const params = [];
-
-        let paramIndex = 1;
-
-        if (options.distance) {
-            sql += `bh.borrowed_date >= CURRENT_DATE - INTERVAL '$${paramIndex} months'`;
-            params.push(options.distance);  
-            paramIndex++;
-        }
-
-        sql += 
-            `
-                GROUP BY b.bookID, b.title, b.author, b.genre
-                ORDER BY borrow_count DESC
-                LIMIT 5
-            `;
-        // params.push(`%${options.distance}%`);
-        // paramIndex++;
-
+    async function get_most_borrow() {
+        let sql = `
+            SELECT 
+                b.bookID,
+                b.title,
+                b.author,
+                b.genre,
+                COUNT(bh.borrowID) AS borrow_count
+            FROM books b
+            JOIN borrowinghistory bh ON b.bookID = bh.bookID
+            WHERE bh.borrowed_date >= CURRENT_DATE - INTERVAL '6 months'
+            GROUP BY b.bookID, b.title, b.author, b.genre
+            ORDER BY borrow_count DESC
+            LIMIT 5
+        `;
+        
         try {
-            const { rows } = await pool.query(sql);
+            const { rows } = await pool.query(sql);  
             return rows;
         } catch (error) {
+            console.error("Database Error:", error);
             throw error;
         }
     }
+    
+    
+    
 
     return { getBooks, postBook, getBook_byID, get_most_borrow};
 };

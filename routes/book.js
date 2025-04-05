@@ -39,16 +39,9 @@ module.exports = function(dalBook) {
         }
     })
 
-    route.get('/analytics/books/most-borrowed/:distance', async function (req, res) {
-        let distance = req.params.distance; // Số tháng cần thống kê
-
-        if (!distance || !isNaN(distance)) {
-            distance = 6;
-        }
-
+    route.get('/analytics/books/most-borrowed/', async function (req, res) {
         try {
-            const books = await dalBook.get_most_borrow({ distance });
-
+            const books = await dalBook.get_most_borrow();
             return res.status(200).json(books);
         } catch (error) {
             return res.status(500).json({error: error});

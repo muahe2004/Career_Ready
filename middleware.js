@@ -25,9 +25,7 @@ module.exports = function () {
             if (err) {
                 return res.status(401).json({ message: "Invalid token" });
             }
-
-            req.user = payload; 
-
+            req.user = payload;
             next();
         });
     }
@@ -40,9 +38,11 @@ module.exports = function () {
     }
 
     function requireSelfOrAdmin(req, res, next) {
-        if (req.user.role !== 'admin' && req.user.id !== req.params.id) {
+        const userIdFromParams = parseInt(req.params.id, 10);  
+        if (req.user.role !== 'admin' && req.user.id !== userIdFromParams) {
             return res.status(403).json({ message: "Bạn không có quyền truy cập!" });
         }
+        
         next();
     }
     
